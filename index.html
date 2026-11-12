@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip & Progres Terjemahan</title>
+    <style>
+        /* === CSS & WARNA ASLI BEAR BLOG === */
+        :root {
+            --width: 780px;
+            --font-main: Verdana, sans-serif;
+            --font-secondary: Verdana, sans-serif;
+            --font-scale: 1em;
+            --background-color: #fff;
+            --heading-color: #222;
+            --text-color: #444;
+            --link-color: #3273dc;
+            --visited-color: #8b6fcb;
+            --code-background-color: #f2f2f2;
+            --code-color: #222;
+            --blockquote-color: #222;
+            --border-color: #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #01242e;
+                --heading-color: #eee;
+                --text-color: #ddd;
+                --link-color: #8cc2dd;
+                --visited-color: #8b6fcb;
+                --code-background-color: #001820;
+                --code-color: #ddd;
+                --blockquote-color: #ccc;
+                --border-color: #133b47;
+            }
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            font-size: var(--font-scale);
+            margin: auto;
+            padding: 20px;
+            max-width: var(--width);
+            text-align: left;
+            background-color: var(--background-color);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.5;
+            color: var(--text-color);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-main);
+            color: var(--heading-color);
+        }
+
+        a {
+            color: var(--link-color);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline; 
+        }
+
+        a:visited {
+            color: var(--visited-color);
+        }
+
+        nav a {
+            margin-right: 12px;
+        }
+
+        strong, b {
+            color: var(--heading-color);
+        }
+
+        time {
+            font-family: monospace;
+            font-style: normal;
+            font-size: 0.8em;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+
+        main {
+            line-height: 1.6;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px dashed var(--border-color);
+            margin: 2em 0;
+        }
+
+        code {
+            font-family: monospace;
+            padding: 2px 6px;
+            background-color: var(--background-color);
+            color: var(--code-color);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            font-size: 0.78em;
+            white-space: nowrap;
+        }
+
+        blockquote {
+            border-left: 2px solid var(--link-color);
+            color: var(--blockquote-color);
+            padding-left: 12px;
+            margin: 8px 0;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        footer {
+            padding: 25px 0;
+            text-align: center;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .title:hover {
+            text-decoration: none;
+        }
+
+        .title h1 {
+            font-size: 1.5em;
+            margin-bottom: 0.2em;
+        }
+
+        /* === HEADER BAGIAN & KOLOM PENCARIAN === */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+        }
+
+        .search-input {
+            background-color: var(--code-background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: var(--font-secondary);
+            font-size: 0.85em;
+            width: 220px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--link-color);
+        }
+
+        /* === TATA LETAK GRID === */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .grid-1col {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        /* === GAYA KOTAK SERAGAM (CARD BOX) === */
+        .box {
+            background-color: var(--code-background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95em;
+        }
+
+        .box-desc {
+            margin: 8px 0 0 0;
+            font-size: 0.88em;
+            opacity: 0.9;
+        }
+
+        .box-links {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 0.85em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .box-links a {
+            font-weight: bold;
+        }
+
+        /* === DAFTAR PROGRES MULTI-TAHAP === */
+        .stage-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px 20px;
+            margin: 8px 0 12px 0;
+        }
+
+        .stage-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stage-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82em;
+        }
+
+        .progress-track {
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            height: 7px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: var(--link-color);
+            height: 100%;
+        }
+
+        /* === TOMBOL PAGINATION (HALAMAN 1, 2, 3) === */
+        .pagination {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+            justify-content: center;
+        }
+
+        .page-btn {
+            background-color: var(--code-background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 4px 11px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .page-btn:hover {
+            border-color: var(--link-color);
+        }
+
+        .page-btn.active {
+            background-color: var(--link-color);
+            color: var(--background-color);
+            border-color: var(--link-color);
+            font-weight: bold;
+        }
+
+        .empty-msg {
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-style: italic;
+            display: none;
+            margin: 10px 0;
+        }
+
+        /* === MASKOT POJOK KIRI BAWAH (SELALU IKUT SCROLL) === */
+        .corner-mascot {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 115px; /* Ubah angka ini jika ingin memperbesar/memperkecil ukuran */
+            height: auto;
+            z-index: 999;
+            pointer-events: none; /* Supaya tidak menghalangi klik tombol/link di belakangnya */
+            user-select: none;
+        }
+
+        /* Responsif untuk layar HP */
+        @media (max-width: 600px) {
+            .grid-2col, .stage-list {
+                grid-template-columns: 1fr;
+            }
+            .search-input {
+                width: 100%;
+            }
+            .corner-mascot {
+                width: 75px; /* Ukuran otomatis lebih mungil di layar HP */
+                opacity: 0.9;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="title" href="#">
+            <h1>Catatan & Arsip Terjemahan</h1>
+        </a>
+        <nav>
+            <a href="#selesai">Selesai</a>
+            <a href="#berlangsung">Berlangsung</a>
+            <a href="#teaser">Teaser</a>
+        </nav>
+    </header>
+
+    <hr>
+
+    <main>
+        <p>Indeks publikasi naskah terjemahan bahasa Indonesia, pembaruan progres pengerjaan, dan cuplikan draf.</p>
+
+        <!-- ================= BAGIAN 1: SELESAI (GRID 2x2 + PENCARIAN) ================= -->
+        <div class="section-header">
+            <h2 id="selesai">Arsip Selesai</h2>
+            <input type="text" id="search-selesai" class="search-input" placeholder="Cari judul atau penulis...">
+        </div>
+        
+        <p id="empty-selesai" class="empty-msg">Tidak ada naskah yang cocok dengan pencarian.</p>
+
+        <div class="grid-2col" id="grid-selesai">
+            <!-- Kotak 1 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>Di Dalam Kabut (Kiri no Naka) — Issei Sagawa</strong>
+                        <time datetime="2026-10">Okt 2026</time>
+                    </div>
+                    <p class="box-desc">Terjemahan lengkap bahasa Indonesia dari memoar psikologis dan catatan kasus Paris tahun 1981.</p>
+                </div>
+                <div class="box-links">
+                    <a href="https://link-baca-disini.com" target="_blank">Baca</a>
+                    <a href="https://link-download-disini.com" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <!-- Kotak 2 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>Buku Log & Catatan Penyelamatan Kapal Essex</strong>
+                        <time datetime="2026-10">Okt 2026</time>
+                    </div>
+                    <p class="box-desc">Terjemahan dokumen sejarah maritim dan kesaksian bertahan hidup awak kapal pemburu paus Essex (1820).</p>
+                </div>
+                <div class="box-links">
+                    <a href="https://link-baca-disini.com" target="_blank">Baca</a>
+                    <a href="https://link-download-disini.com" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <!-- Kotak 3 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>Arsip Persidangan Jeanne d'Arc (1431 & 1455)</strong>
+                        <time datetime="2026-09">Sep 2026</time>
+                    </div>
+                    <p class="box-desc">Rangkaian terjemahan transkrip interogasi tahun 1431 beserta sidang pembatalan vonis 1455–1456.</p>
+                </div>
+                <div class="box-links">
+                    <a href="https://link-baca-disini.com" target="_blank">Baca</a>
+                    <a href="https://link-download-disini.com" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <!-- Kotak 4 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>The Damned Thing — Ambrose Bierce</strong>
+                        <time datetime="2026-10">Okt 2026</time>
+                    </div>
+                    <p class="box-desc">Terjemahan cerita pendek horor klasik mengenai makhluk tak kasatmata di luar spektrum mata manusia.</p>
+                </div>
+                <div class="box-links">
+                    <a href="https://link-baca-disini.com" target="_blank">Baca</a>
+                    <a href="https://link-download-disini.com" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <!-- Kotak 5 (Otomatis masuk Halaman 2) -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>The Legend of Sleepy Hollow — Washington Irving</strong>
+                        <time datetime="2026-08">Agu 2026</time>
+                    </div>
+                    <p class="box-desc">Terjemahan kisah klasik gotik Amerika tentang Ichabod Crane dan Penunggang Kuda Tanpa Kepala.</p>
+                </div>
+                <div class="box-links">
+                    <a href="https://link-baca-disini.com" target="_blank">Baca</a>
+                    <a href="https://link-download-disini.com" target="_blank">Download</a>
+                </div>
+            </div>
+        </div>
+        <div class="pagination" id="page-selesai"></div>
+
+        <hr>
+
+        <!-- ================= BAGIAN 2: SEDANG BERLANGSUNG (LEBAR PENUH AGAR LEGA) ================= -->
+        <h2 id="berlangsung">Sedang Berlangsung</h2>
+
+        <div class="grid-1col" id="grid-berlangsung">
+            <!-- Proyek 1 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>Buku Harian Eksorsisme St. Louis (1949)</strong>
+                        <code>Dalam Pengerjaan</code>
+                    </div>
+                    <div class="stage-list">
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Progres Terjemahan</span><code>75%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 75%;"></div></div>
+                        </div>
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Pemeriksaan Terjemahan (TLC)</span><code>75%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 75%;"></div></div>
+                        </div>
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Progres Penyuntingan (Edit)</span><code>40%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 40%;"></div></div>
+                        </div>
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Pemeriksaan Kualitas (QC)</span><code>10%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 10%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="box-desc">Catatan: Penyelarasan catatan harian minggu terakhir & pemeriksaan istilah liturgi.</p>
+            </div>
+
+            <!-- Proyek 2 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>Transkrip Pengadilan Gilles de Rais (1440)</strong>
+                        <code>Tahap Awal</code>
+                    </div>
+                    <div class="stage-list">
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Progres Terjemahan</span><code>30%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 30%;"></div></div>
+                        </div>
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Pemeriksaan Terjemahan (TLC)</span><code>15%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 15%;"></div></div>
+                        </div>
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Progres Penyuntingan (Edit)</span><code>0%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div>
+                        </div>
+                        <div class="stage-row">
+                            <div class="stage-label"><span>Pemeriksaan Kualitas (QC)</span><code>0%</code></div>
+                            <div class="progress-track"><div class="progress-fill" style="width: 0%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="box-desc">Catatan: Menerjemahkan kesaksian para saksi dan dakwaan awal.</p>
+            </div>
+        </div>
+        <div class="pagination" id="page-berlangsung"></div>
+
+        <hr>
+
+        <!-- ================= BAGIAN 3: TEASER / CUPLIKAN (GRID 2x2) ================= -->
+        <h2 id="teaser">Teaser & Cuplikan Draf</h2>
+
+        <div class="grid-2col" id="grid-teaser">
+            <!-- Kotak Teaser 1 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>Eksorsisme St. Louis — Entri Malam</strong>
+                        <code>Draf Kasar</code>
+                    </div>
+                    <blockquote>
+                        "Sekitar pukul sebelas malam, tanda-tanda gangguan kembali muncul dengan intensitas yang jauh lebih keras. Ranjang bergetar hebat..."
+                    </blockquote>
+                </div>
+                <p class="box-desc">Catatan: Belum melewati tahap penyuntingan akhir.</p>
+            </div>
+
+            <!-- Kotak Teaser 2 -->
+            <div class="box">
+                <div>
+                    <div class="box-header">
+                        <strong>The Voice in the Night — W. H. Hodgson</strong>
+                        <code>Segera</code>
+                    </div>
+                    <blockquote>
+                        "Dari dalam kegelapan kabut terdengar suara serak yang enggan mendekat ke arah cahaya lentera kapal kami..."
+                    </blockquote>
+                </div>
+                <p class="box-desc">Catatan: Cuplikan pembuka proyek cerpen berikutnya.</p>
+            </div>
+        </div>
+        <div class="pagination" id="page-teaser"></div>
+
+    </main>
+
+    <hr>
+
+    <footer>
+        <p>Dikelola via GitHub &bull; Tema adaptasi Bear Blog</p>
+    </footer>
+
+    <!-- === ELEMEN GAMBAR MASKOT POJOK KIRI BAWAH === -->
+    <!-- Ganti "mascot.webp" dengan nama file gambar kamu di GitHub -->
+    <img src="mascot.webp" alt="Mascot" class="corner-mascot">
+
+    <!-- === SCRIPT RINGAN UNTUK PAGINATION & PENCARIAN INSTAN === -->
+    <script>
+        function setupSection(gridId, paginationId, itemsPerPage, searchInputId = null, emptyMsgId = null) {
+            const grid = document.getElementById(gridId);
+            const pagination = document.getElementById(paginationId);
+            const searchInput = searchInputId ? document.getElementById(searchInputId) : null;
+            const emptyMsg = emptyMsgId ? document.getElementById(emptyMsgId) : null;
+            if (!grid || !pagination) return;
+
+            const allItems = Array.from(grid.children);
+            let filteredItems = [...allItems];
+            let currentPage = 1;
+
+            function render() {
+                const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+                if (currentPage > totalPages) currentPage = 1;
+
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+
+                allItems.forEach(item => item.style.display = 'none');
+
+                filteredItems.slice(start, end).forEach(item => {
+                    item.style.display = 'flex';
+                });
+
+                if (emptyMsg) {
+                    emptyMsg.style.display = filteredItems.length === 0 ? 'block' : 'none';
+                }
+
+                pagination.innerHTML = '';
+                if (totalPages > 1) {
+                    for (let i = 1; i <= totalPages; i++) {
+                        const btn = document.createElement('button');
+                        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                        btn.textContent = i;
+                        btn.onclick = () => {
+                            currentPage = i;
+                            render();
+                        };
+                        pagination.appendChild(btn);
+                    }
+                }
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.toLowerCase().trim();
+                    filteredItems = allItems.filter(item => item.textContent.toLowerCase().includes(query));
+                    currentPage = 1;
+                    render();
+                });
+            }
+
+            render();
+        }
+
+        setupSection('grid-selesai', 'page-selesai', 4, 'search-selesai', 'empty-selesai');
+        setupSection('grid-berlangsung', 'page-berlangsung', 2);
+        setupSection('grid-teaser', 'page-teaser', 4);
+    </script>
+
+</body>
+</html>
