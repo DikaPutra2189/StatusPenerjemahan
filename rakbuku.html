@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rak Buku — Arsip & Progres Terjemahan</title>
+    <style>
+        /* === CSS & WARNA ASLI BEAR BLOG === */
+        :root {
+            --width: 780px;
+            --font-main: Verdana, sans-serif;
+            --font-secondary: Verdana, sans-serif;
+            --font-scale: 1em;
+            --background-color: #fff;
+            --heading-color: #222;
+            --text-color: #444;
+            --link-color: #3273dc;
+            --visited-color: #8b6fcb;
+            --code-background-color: #f2f2f2;
+            --code-color: #222;
+            --blockquote-color: #222;
+            --border-color: #ddd;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #01242e;
+                --heading-color: #eee;
+                --text-color: #ddd;
+                --link-color: #8cc2dd;
+                --visited-color: #8b6fcb;
+                --code-background-color: #001820;
+                --code-color: #ddd;
+                --blockquote-color: #ccc;
+                --border-color: #133b47;
+            }
+        }
+
+        body {
+            font-family: var(--font-secondary);
+            font-size: var(--font-scale);
+            margin: auto;
+            padding: 20px;
+            max-width: var(--width);
+            text-align: left;
+            background-color: var(--background-color);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.5;
+            color: var(--text-color);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-main);
+            color: var(--heading-color);
+        }
+
+        a {
+            color: var(--link-color);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline; 
+        }
+
+        a:visited {
+            color: var(--visited-color);
+        }
+
+        nav a {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        strong, b {
+            color: var(--heading-color);
+        }
+
+        time {
+            font-family: monospace;
+            font-style: normal;
+            font-size: 0.8em;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+
+        main {
+            line-height: 1.6;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px dashed var(--border-color);
+            margin: 1.8em 0;
+        }
+
+        code {
+            font-family: monospace;
+            padding: 2px 6px;
+            background-color: var(--background-color);
+            color: var(--code-color);
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            font-size: 0.75em;
+            white-space: nowrap;
+        }
+
+        footer {
+            padding: 25px 0;
+            text-align: center;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .title:hover {
+            text-decoration: none;
+        }
+
+        .title h1 {
+            font-size: 1.5em;
+            margin-bottom: 0.2em;
+        }
+
+        /* === PANEL KONTROL RAK BUKU === */
+        .shelf-controls {
+            background-color: var(--code-background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: block;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 6px;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-btn {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-family: var(--font-secondary);
+            font-size: 0.82em;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--link-color);
+        }
+
+        .filter-btn.active {
+            background-color: var(--link-color);
+            color: var(--background-color);
+            border-color: var(--link-color);
+            font-weight: bold;
+        }
+
+        .search-bar-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .search-input {
+            background-color: var(--code-background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: var(--font-secondary);
+            font-size: 0.85em;
+            width: 260px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--link-color);
+        }
+
+        .result-count {
+            font-family: monospace;
+            font-size: 0.85em;
+            opacity: 0.85;
+        }
+
+        /* === TATA LETAK GRID === */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        /* === GAYA KOTAK SERAGAM === */
+        .box {
+            background-color: var(--code-background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.95em;
+        }
+
+        .box-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .box-desc {
+            margin: 6px 0 0 0;
+            font-size: 0.88em;
+            opacity: 0.9;
+        }
+
+        .box-links {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 0.85em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .box-links a {
+            font-weight: bold;
+        }
+
+        /* === TOMBOL PAGINATION === */
+        .pagination {
+            display: flex;
+            gap: 6px;
+            margin-top: 16px;
+            justify-content: center;
+        }
+
+        .page-btn {
+            background-color: var(--code-background-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 4px 11px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .page-btn:hover {
+            border-color: var(--link-color);
+        }
+
+        .page-btn.active {
+            background-color: var(--link-color);
+            color: var(--background-color);
+            border-color: var(--link-color);
+            font-weight: bold;
+        }
+
+        .empty-msg {
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-style: italic;
+            display: none;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        /* === MASKOT === */
+        .corner-mascot {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 115px;
+            height: auto;
+            z-index: 999;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+            .search-input {
+                width: 100%;
+            }
+            .corner-mascot {
+                width: 75px;
+                opacity: 0.9;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="title" href="index.html">
+            <h1>Catatan & Progres Terjemahan</h1>
+        </a>
+        <nav>
+            <a href="index.html">Utama</a>
+            <a href="rakbuku.html">Rak Buku</a>
+        </nav>
+    </header>
+
+    <hr>
+
+    <main>
+        <h2>Rak Buku & Katalog Indeks</h2>
+        <p>Saring seluruh koleksi terjemahan berdasarkan jenis naskah, asal peradaban/negara, atau kata kunci.</p>
+
+        <!-- ================= PANEL FILTER KATEGORI & NEGARA ================= -->
+        <div class="shelf-controls">
+            <!-- Filter 1: Jenis / Kategori -->
+            <div class="control-group">
+                <span class="control-label">Kategori Naskah</span>
+                <div class="filter-row" id="filter-kategori">
+                    <button class="filter-btn active" data-val="semua">Semua</button>
+                    <button class="filter-btn" data-val="epik">Epik & Mitologi</button>
+                    <button class="filter-btn" data-val="dongeng">Dongeng & Cerita Rakyat</button>
+                    <button class="filter-btn" data-val="sejarah">Sejarah & Transkrip</button>
+                    <button class="filter-btn" data-val="memoar">Memoar & Kisah Nyata</button>
+                </div>
+            </div>
+
+            <!-- Filter 2: Asal Wilayah / Negara -->
+            <div class="control-group">
+                <span class="control-label">Asal Negara / Peradaban</span>
+                <div class="filter-row" id="filter-asal">
+                    <button class="filter-btn active" data-val="semua">Semua</button>
+                    <button class="filter-btn" data-val="mesopotamia">Mesopotamia</button>
+                    <button class="filter-btn" data-val="yunani-romawi">Yunani & Romawi</button>
+                    <button class="filter-btn" data-val="jerman">Jerman</button>
+                    <button class="filter-btn" data-val="prancis">Prancis</button>
+                    <button class="filter-btn" data-val="inggris">Inggris & Irlandia</button>
+                    <button class="filter-btn" data-val="jepang">Jepang</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bar Pencarian & Penghitung Jumlah -->
+        <div class="search-bar-wrap">
+            <span class="result-count" id="result-count">Menampilkan 16 naskah</span>
+            <input type="text" id="search-rak" class="search-input" placeholder="Cari judul atau kata kunci...">
+        </div>
+
+        <p id="empty-rak" class="empty-msg">Tidak ada naskah yang cocok dengan kombinasi filter tersebut.</p>
+
+        <!-- ================= DAFTAR KOLEKSI RAK BUKU ================= -->
+        <div class="grid-2col" id="grid-rak">
+
+            <!-- TAMBAHAN BARU 1 -->
+            <div class="box" data-kategori="dongeng" data-asal="inggris">
+                <div>
+                    <div class="box-header">
+                        <strong>Kelinci Beludru (Atau Bagaimana Mainan Menjadi Nyata)</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Dongeng & Sastra Anak</code>
+                        <code>Inggris / Amerika</code>
+                    </div>
+                    <p class="box-desc">Terjemahan kisah klasik Margery Williams (The Velveteen Rabbit) yang menyentuh tentang cinta, keajaiban, dan pengorbanan yang menghidupkan sebuah mainan.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <!-- TAMBAHAN BARU 2 -->
+            <div class="box" data-kategori="dongeng" data-asal="inggris">
+                <div>
+                    <div class="box-header">
+                        <strong>Sang Pangeran Bahagia dan Kisah Lainnya</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Dongeng & Sastra Anak</code>
+                        <code>Irlandia / Inggris</code>
+                    </div>
+                    <p class="box-desc">Terjemahan kumpulan dongeng Oscar Wilde (The Happy Prince and Other Tales) yang sarat dengan kritik sosial, keindahan, dan akhir yang tragis nan indah.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="memoar" data-asal="jepang">
+                <div>
+                    <div class="box-header">
+                        <strong>Di Dalam Kabut (Kiri no Naka) — Issei Sagawa</strong>
+                        <time datetime="2026-10">Okt 2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Memoar</code>
+                        <code>Jepang</code>
+                    </div>
+                    <p class="box-desc">Terjemahan lengkap bahasa Indonesia dari memoar psikologis dan catatan kasus Paris tahun 1981.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="sejarah" data-asal="prancis">
+                <div>
+                    <div class="box-header">
+                        <strong>Transkrip Sidang Vonis Jeanne d'Arc (1431)</strong>
+                        <time datetime="2026-09">Sep 2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Sejarah & Transkrip</code>
+                        <code>Prancis</code>
+                    </div>
+                    <p class="box-desc">Terjemahan dokumen persidangan inkuisisi dan interogasi yang berujung pada eksekusi Jeanne d'Arc.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="sejarah" data-asal="prancis">
+                <div>
+                    <div class="box-header">
+                        <strong>Transkrip Sidang Pemulihan Jeanne d'Arc (1455)</strong>
+                        <time datetime="2026-09">Sep 2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Sejarah & Transkrip</code>
+                        <code>Prancis</code>
+                    </div>
+                    <p class="box-desc">Terjemahan dokumen pengadilan rehabilitasi yang membatalkan vonis Jeanne d'Arc secara anumerta.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="mesopotamia">
+                <div>
+                    <div class="box-header">
+                        <strong>Epos Gilgamesh</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Mesopotamia</code>
+                    </div>
+                    <p class="box-desc">Terjemahan lengkap epos dari Mesopotamia kuno yang menceritakan perjalanan epik Raja Uruk.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="mesopotamia">
+                <div>
+                    <div class="box-header">
+                        <strong>Enuma Elish</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Mesopotamia</code>
+                    </div>
+                    <p class="box-desc">Terjemahan mitos penciptaan Babilonia kuno dan kebangkitan dewa agung Marduk.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="mesopotamia">
+                <div>
+                    <div class="box-header">
+                        <strong>Atrahasis</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Mesopotamia</code>
+                    </div>
+                    <p class="box-desc">Terjemahan epik Akkadia mengenai penciptaan umat manusia dan bencana air bah agung.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="mesopotamia">
+                <div>
+                    <div class="box-header">
+                        <strong>Turunnya Ishtar ke Dunia Bawah</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Mesopotamia</code>
+                    </div>
+                    <p class="box-desc">Terjemahan mitos Akkadia tentang perjalanan sang dewi ke alam maut dan konsekuensi kosmisnya.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="mesopotamia">
+                <div>
+                    <div class="box-header">
+                        <strong>Nergal dan Ereshkigal</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Mesopotamia</code>
+                    </div>
+                    <p class="box-desc">Terjemahan mitos Mesopotamia mengenai perjumpaan dan penyatuan dewa wabah dengan ratu dunia bawah.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="yunani-romawi">
+                <div>
+                    <div class="box-header">
+                        <strong>Metamorphoses — Ovidius</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Yunani & Romawi</code>
+                    </div>
+                    <p class="box-desc">Terjemahan mahakarya puisi naratif Romawi kuno yang merangkai ratusan mitos transformasi.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="epik" data-asal="yunani-romawi">
+                <div>
+                    <div class="box-header">
+                        <strong>Batrachomyomachia</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Epik & Mitologi</code>
+                        <code>Yunani & Romawi</code>
+                    </div>
+                    <p class="box-desc">Terjemahan epos parodi komik Yunani kuno yang memelesetkan gaya heroik epos Iliad (Pertempuran Katak dan Tikus).</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="sejarah" data-asal="mesopotamia">
+                <div>
+                    <div class="box-header">
+                        <strong>Hikayat Ahikar</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Sejarah & Kebijaksanaan</code>
+                        <code>Mesopotamia</code>
+                    </div>
+                    <p class="box-desc">Terjemahan literatur kebijaksanaan kuno Timur Dekat mengenai menteri Asyur yang dikhianati keponakannya.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="dongeng" data-asal="jerman">
+                <div>
+                    <div class="box-header">
+                        <strong>Dongeng Grimm Bersaudara</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Dongeng & Cerita Rakyat</code>
+                        <code>Jerman</code>
+                    </div>
+                    <p class="box-desc">Terjemahan komprehensif dari arsip cerita rakyat dan dongeng klasik Jerman gubahan Jacob dan Wilhelm Grimm.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="dongeng" data-asal="prancis">
+                <div>
+                    <div class="box-header">
+                        <strong>Dongeng Ibu Angsa (Charles Perrault)</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Dongeng & Cerita Rakyat</code>
+                        <code>Prancis</code>
+                    </div>
+                    <p class="box-desc">Terjemahan Histoires ou Contes du Temps Passé, kumpulan dongeng Prancis klasik abad ke-17.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+            <div class="box" data-kategori="dongeng" data-asal="jerman">
+                <div>
+                    <div class="box-header">
+                        <strong>Der Struwwelpeter — Heinrich Hoffmann</strong>
+                        <time datetime="2026">2026</time>
+                    </div>
+                    <div class="box-tags">
+                        <code>Dongeng & Cerita Rakyat</code>
+                        <code>Jerman</code>
+                    </div>
+                    <p class="box-desc">Terjemahan buku anak-anak Jerman klasik abad ke-19 yang berisi kisah-kisah peringatan bergambar yang kelam.</p>
+                </div>
+                <div class="box-links">
+                    <a href="#" target="_blank">Baca</a>
+                    <a href="#" target="_blank">Download</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="pagination" id="page-rak"></div>
+
+    </main>
+
+    <hr>
+
+    <footer>
+        <p>Dikelola via GitHub &bull; Tema adaptasi Bear Blog</p>
+    </footer>
+
+    <!-- MASKOT -->
+    <img src="mascot.webp" alt="Mascot" class="corner-mascot">
+
+    <!-- === SCRIPT FILTER GANDA, PENCARIAN & PAGINATION === -->
+    <script>
+        const grid = document.getElementById('grid-rak');
+        const pagination = document.getElementById('page-rak');
+        const searchInput = document.getElementById('search-rak');
+        const emptyMsg = document.getElementById('empty-rak');
+        const resultCount = document.getElementById('result-count');
+
+        const allItems = Array.from(grid.children);
+        const itemsPerPage = 4;
+
+        let activeKategori = 'semua';
+        let activeAsal = 'semua';
+        let searchQuery = '';
+        let currentPage = 1;
+
+        function renderRak() {
+            const filtered = allItems.filter(item => {
+                const kat = item.getAttribute('data-kategori') || '';
+                const asal = item.getAttribute('data-asal') || '';
+                const text = item.textContent.toLowerCase();
+
+                const matchKat = (activeKategori === 'semua') || kat.includes(activeKategori);
+                const matchAsal = (activeAsal === 'semua') || asal.includes(activeAsal);
+                const matchSearch = text.includes(searchQuery);
+
+                return matchKat && matchAsal && matchSearch;
+            });
+
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = 1;
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            allItems.forEach(item => item.style.display = 'none');
+            filtered.slice(start, end).forEach(item => item.style.display = 'flex');
+
+            resultCount.textContent = `Menampilkan ${filtered.length} naskah`;
+            emptyMsg.style.display = filtered.length === 0 ? 'block' : 'none';
+
+            pagination.innerHTML = '';
+            if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                    btn.textContent = i;
+                    btn.onclick = () => {
+                        currentPage = i;
+                        renderRak();
+                    };
+                    pagination.appendChild(btn);
+                }
+            }
+        }
+
+        document.querySelectorAll('#filter-kategori .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#filter-kategori .filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeKategori = btn.getAttribute('data-val');
+                currentPage = 1;
+                renderRak();
+            });
+        });
+
+        document.querySelectorAll('#filter-asal .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#filter-asal .filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeAsal = btn.getAttribute('data-val');
+                currentPage = 1;
+                renderRak();
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            currentPage = 1;
+            renderRak();
+        });
+
+        renderRak();
+    </script>
+
+</body>
+</html>
